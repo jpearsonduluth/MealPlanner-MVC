@@ -1,0 +1,86 @@
+﻿@model MealPlanner.Models.IndexVM
+	 
+<div class="modal fade" id="recipeModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg" role="document" style="max-height:95%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Recipe Details</h4>
+			</div>
+			<div class="modal-body" style="max-height:90; overflow:auto;">
+				<input type="hidden" value="0" id="recipeId" />
+
+				<div class="row">
+					<div class="form-group col-md-4">
+						<label for="name">Name</label>
+						<input class="form-control" id="name" type="text">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-4">
+						<label for="ImageUrl">Image Url</label>
+						<input class="form-control" id="ImageUrl" type="text">
+					</div>
+					<div class="form-group col-md-4 col-md-offset-2">
+						<label for="rating">Rating</label>
+						<div class="radio-wrapper">
+							<div class="radio radio-inline">
+								<label>
+									<input type="radio" name="ratingRadios" id="ratingRadios1" value="1"> 1
+								</label>
+							</div>
+							<div class="radio radio-inline">
+								<label>
+									<input type="radio" name="ratingRadios" id="ratingRadios2" value="2"> 2
+								</label>
+							</div>
+							<div class="radio radio-inline">
+								<label>
+									<input type="radio" name="ratingRadios" id="ratingRadios3" value="3"> 3
+								</label>
+							</div>
+							<div class="radio radio-inline">
+								<label>
+									<input type="radio" name="ratingRadios" id="ratingRadios4" value="4"> 4
+								</label>
+							</div>
+							<div class="radio radio-inline">
+								<label>
+									<input type="radio" name="ratingRadios" id="ratingRadios5" value="5"> 5
+								</label>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="form-group col-md-6">
+						<label for="description">Description</label>
+						<textarea class="form-control" id="description" rows="5"></textarea>
+					</div>
+					<div class="form-group col-md-6">
+						<label for="directions">Directions</label>
+						<textarea class="form-control" id="directions" rows="5"></textarea>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-12">
+						<label for="directions">Ingreedients:</label>
+						<div class="well well-lg" id="ingredientContainer">
+							<button type="button" class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#ingredientModal" style="margin-bottom: 15px; margin-top: -15px;">Add Ingredient</button>
+							<div class="row">
+								<div class="col-md-2">Item</div>
+								<div class="col-md-2 col-md-offset-1">Quantity</div>
+								<div class="col-md-3 col-md-offset-1">Unit</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onclick="saveRecipe()">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

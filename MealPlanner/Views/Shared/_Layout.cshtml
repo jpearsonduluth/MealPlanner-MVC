@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="recipes">
+	<div class="row-fluid main-nav">
+		<div class="col-md-3 col-md-offset-1"><a href="#" data-target="mealPlanner" class="navLink">Meal Planner</a></div>
+		<div class="col-md-3 col-md-offset-1"><a href="#" data-target="recipes" class="navLink active">Recipes</a></div>
+		<div class="col-md-3 col-md-offset-1"><a href="#" data-target="mealWizard" class="navLink">Meal Wizard</a></div>
+	</div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/knockout")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

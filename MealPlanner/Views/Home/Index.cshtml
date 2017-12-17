@@ -1,0 +1,528 @@
+﻿@model MealPlanner.Models.IndexVM
+@{ ViewBag.Title = "Home"; }
+
+<style>
+	body.recipes {
+		background: url('https://media.rbl.ms/image?u=%2Ffiles%2F2017%2F01%2F23%2F6362072715851561361870284198_food11.jpg&ho=https%3A%2F%2Faz616578.vo.msecnd.net&s=293&h=7a9e52f78eadc00cc2822be28e214cdc3bf346095320dcc052dc994b35c61ee2&size=980x&c=1072888516') no-repeat center center fixed;
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		color: #fff;
+		background-color: #333;
+		font-family: 'Open Sans',Arial,Helvetica,Sans-Serif;
+		-webkit-transition: background-image .5s ease-in-out;
+		-moz-transition: background-image .5s ease-in-out;
+		-o-transition: background-image .5s ease-in-out;
+		-ms-transition: background-image .5s ease-in-out;
+		transition: background-image .5s ease-in-out;
+	}
+
+	body.mealPlanner {
+		background: url('https://s3-us-west-2.amazonaws.com/beachbody-blog/uploads/2016/12/CORE-DE-FORCE-Meal-Prep.jpg') no-repeat center center fixed;
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		color: #fff;
+		background-color: #333;
+		font-family: 'Open Sans',Arial,Helvetica,Sans-Serif;
+		-webkit-transition: background-image .5s ease-in-out;
+		-moz-transition: background-image .5s ease-in-out;
+		-o-transition: background-image .5s ease-in-out;
+		-ms-transition: background-image .5s ease-in-out;
+		transition: background-image .5s ease-in-out;
+	}
+
+	body.mealWizard {
+		background: url('http://residencestyle.com/wp-content/uploads/2014/12/Adjustable-wire-shelving-is-an-inexpensive-product-for-customizing-your-pantry-space..jpeg') no-repeat center center fixed;
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		color: #fff;
+		background-color: #333;
+		font-family: 'Open Sans',Arial,Helvetica,Sans-Serif;
+		-webkit-transition: background-image .5s ease-in-out;
+		-moz-transition: background-image .5s ease-in-out;
+		-o-transition: background-image .5s ease-in-out;
+		-ms-transition: background-image .5s ease-in-out;
+		transition: background-image .5s ease-in-out;
+	}
+
+	.container-fluid {
+		background-color: rgba(0,0,0,0.2);
+		padding-bottom: 50px
+	}
+	.block {
+		-webkit-transition: width .5s ease-in-out;
+	}
+	.block, .intro {
+		background-color: rgba(0,0,0,0.5);
+		min-height: 370px;
+	}
+
+	.intro {
+		min-height: 175px;
+	}
+
+	#recipes .block {
+		margin-bottom:35px;
+	}
+	.recipeImage {
+		width: 100%;
+		max-height:265px;
+		padding-bottom: 15px;
+	}
+	.glyphicon-star {
+		color: gold;
+		padding-right: 5px;
+	}
+	p.description {
+		height: 75px;
+		overflow:auto;
+	}
+	p.directions {
+		display:none;
+	}
+	.full-detail {
+		width: 100%;
+		margin-left: 0px;
+		-webkit-transition: width .5s ease-in-out;
+	}
+	.full-detail p {
+		display:block;
+		height:auto;
+	}
+	.full-detail .textWrapper {
+		width: 45%;
+		float:left;
+	}
+	.full-detail .recipeImage {
+		width: 40%;
+		float: right;
+	}
+
+	
+	.main-nav {
+		background-color: rgba(0,0,0,.75);
+		margin-bottom: 5px;
+		padding-top: 5px;
+		position: fixed;
+		top: 0;
+		width: 100%;
+		z-index: 9998;
+	}
+
+		.main-nav .navLink {
+			font-size: 30px;
+			font-weight: bold;
+		}
+
+			.main-nav .navLink.active {
+				font-size: 40px;
+				font-weight: bolder;
+			}
+
+	.page {
+		display: none;
+	}
+
+		.page.active {
+			display: block;
+		}
+	.modal {
+		color: black;
+		z-index: 9999;
+	}
+	.container-fluid {
+		margin-top:25px;
+	}
+	.radio-wrapper .radio {
+		margin: 5px;
+	}
+</style>
+
+<div class="container-fluid">
+	<br />
+
+	<div class="pages">
+
+
+		<div class="pages-inner" role="listbox">
+
+
+			<div class="row page active" id="recipes">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="row">
+						<div class="col-md-12 offsetHalf intro">
+							<i class="icon-screenshot icon-5x" style="color:#ee1111;"></i>
+							<h1 class="pull-center"><strong>Recipes</strong></h1>
+							<br />
+							<p class="lead pull-center">View, Add, and Edit all your favorite recipes right here!</p>
+							<br />
+							<button class="btn-success btn" onclick="newRecipe();">New!</button>
+						</div>
+					</div>
+
+					<br /><br /><br /><br />
+
+					<div class="container" data-bind="foreach: renderedItems">
+						<div class="row" data-bind="foreach: $data">
+							<div data-bind="attr:{ 'class': ($index()%2!=0) ? 'col-md-5  block col-md-offset-2' : 'col-md-5  block', 'data-recipeid': RecipeId }">
+								<h1>
+									<a class="nameTag" onclick="showRecipeFullDetail(this);" data-bind="text: Name" title="Click for full details and instructions!" data-toggle="tooltip" data-placement="top" href="#RecipeDetail"></a>
+									<button onclick="editRecipe(this);" class="btn btn-success pull-right btnEditRecipe" title="Click to Edit!" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit"></span></button>
+								</h1>
+								<h4 class="stars" data-bind="foreach: new Array(Rating)"><span class="glyphicon glyphicon-star"></span></h4>
+
+								<div class="textWrapper">
+									<br />
+									<p class="description" data-bind="text: Description"></p>
+									<br />
+									<p class="directions" data-bind="text: Directions"></p>
+									<br />
+									<ul class="recipeIngredients"></ul>
+								</div>
+								<img data-bind="attr:{ src: ImageUrl }" class="recipeImage" />
+							</div>
+						</div>
+					</div>
+						
+					<div class="row">
+						<div class="col-md-1 col-lg-offset-5">
+							<button onclick="getRecipies()" class="btn-primary btn btn-lg">Load More</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+			<div class="row page" id="mealPlanner">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="row">
+						<div class="col-md-12 offsetHalf intro">
+							<i class="icon-screenshot icon-5x" style="color:#ee1111;"></i>
+							<h1 class="pull-center"><strong>Meal Planning</strong></h1>
+							<br />
+							<p class="lead pull-center">Search for and select all your forvorite recipes to create a meal plan! When your meal plan is ready we'll give a complete shopping list!</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row page" id="mealWizard">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="row">
+						<div class="col-md-12 offsetHalf intro">
+							<i class="icon-screenshot icon-5x" style="color:#ee1111;"></i>
+							<h1 class="pull-center"><strong>Meal Wizard</strong></h1>
+							<br />
+							<p class="lead pull-center">Not sure whats for dinner? Tell us whats in the pantry or the fridge, and well find some of our favorite recipes with those items!</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	@Html.Partial("Modals/RecipeModal", Model)
+	@Html.Partial("Modals/IngredientModal", Model)
+</div>
+@section scripts {
+	<script type="text/javascript">
+		// General UI functionality
+		$(document).ready(function () {
+			$('[data-toggle="tooltip"]').tooltip();
+			getRecipies();
+		});
+		$(".navLink").click(function (e) {
+			var targ = $(e.target).data("target");
+			$(".page.active, .navLink.active").removeClass("active");
+			$(".page[id='" + targ + "']").addClass("active");
+			$(e.target).addClass("active");
+			$("body").attr("class", targ);
+		});
+		var measureUnitJSON = @Html.Raw(Json.Encode(Model.MeasureUnits));
+
+		// Knockout
+		function Recipe(data) {
+			var self = this;
+			self.RecipeId = ko.observable(data.RecipeId);
+			self.Name = ko.observable(data.Name);
+			self.Rating = data.Rating;
+			self.Description = data.Description
+			self.Directions = data.Directions
+			self.Instructions = data.Instructions;
+			self.ImageUrl = data.ImageUrl;
+			self.Index = data.Index;
+		}
+		function ResipesViewModel() {
+			var self = this;
+			self.Recipes = ko.observableArray([]);
+			self.renderedItems = ko.computed(function () {
+				var data = self.Recipes();
+				var times = Math.ceil(data.length / 2);
+				var result = [];
+				for (var i = 0; i < times; i++) {
+					result.push(data.slice(i * 2, i * 2 + 2));
+				}
+				return result;
+			});
+		}
+		var vm = new ResipesViewModel();
+		ko.applyBindings(vm);
+
+
+		function showRecipeFullDetail(clicked) {
+			var $block = $(clicked).closest('.block');
+			$block.toggleClass('full-detail');
+
+			var ingrList = $block.find("ul.recipeIngredients");
+			if (ingrList.children().length < 1) {
+				var recipeIngr = getRecipeIngredients($block.data("recipeid"));
+				var $mu = $(measureUnitJSON);
+				var t;
+				$.each(recipeIngr, function () {
+					var t = this;
+					ingrList.append("<li>" + t.Quantity + " " + $mu.filter(function () { return this.MeasureUnitId == t.MeasureUnitId; })[0].Name + " " + t.Name + "</li>");
+				});
+			}
+		}
+
+		//Modal Management
+		//Recipe Modal
+		function newRecipe() {
+			resetRecipieModal();
+			$("#recipeModal").modal("show");
+		}
+		function resetRecipieModal() {
+			$("#recipeId, #name, #description, #directions, #ImageUrl").val('');
+			$("#ratingRadios1").trigger("click");
+			$("#ingredientContainer .recipe-ingredient").remove();
+
+		}
+		function editRecipe(clicked) {
+			resetRecipieModal();
+			var block = $(clicked).closest(".block");
+			var nameTag = block.find("a.nameTag");
+			$("#recipeId").val(block.data("recipeid"));
+			$("#name").val(nameTag.text());
+			$("[name='ratingRadios'][value='" + block.find(".glyphicon-star").length+"']").trigger("click");
+			$("#description").val(block.find("p.description").text());
+			$("#directions").val(block.find("p.directions").text());
+			$("#ImageUrl").val(block.find("img").attr("src"));
+			$.each(getRecipeIngredients(block.data("recipeid")), function () {
+				addIngredient(this);
+			});
+			$("#recipeModal").modal("show");
+		}
+		function validateRecipe() {
+			//TO-DO: add some form validation here...
+			return true;
+		}
+
+
+		//Ingredients Modal
+		$("#ingredientModal").on('show.bs.modal', function () {
+			$("#ingredientCategories").val('');
+			$("#ingrTabs .nav a:first").click();
+			$("#ingrTabs").hide();
+		});
+		function toggleIngrTabs() {
+			var catId = $("#ingredientCategories").val();
+			if (catId) {
+				var ingr = getIngredients(catId);
+				var ingrSelect = $("#ingredientList");
+				ingrSelect.empty();
+				$.each(ingr, function () {
+					ingrSelect.append("<option value='" + this.IngredientId + "'>" + this.Name + "</opiton>");
+				})
+				$("#ingrTabs").show();
+			}
+			else {
+				$("#ingrTabs").hide();
+			}
+		}
+		function validateIngredient() {
+			//TO-DO: add some form validation here...
+			return true;
+		}
+		function selectIngredient() {
+			var ingr = $("#ingredientList option:selected");
+			addIngredient({ IngredientId: ingr.attr("value"), Name: ingr.text() });
+		}
+		function addIngredient(ingr) {
+			if (!ingr.Quantity) {
+				ingr.Quantity = 1;
+			}
+			var templ =
+				$('<div class="recipe-ingredient" data-ingredientid="'+ingr.IngredientId+'">' +
+					'<div class="row well well-sm">' +
+						'<div class="col-md-2 ingrName">' +
+							ingr.Name +
+						'</div>' +
+						'<div class="col-md-2 col-md-offset-1">' +
+							'<input type="number" class="ingrQuantity form-control" value="'+ingr.Quantity+'" min=".01" />' +
+						'</div>' +
+						'<div class="col-md-3 col-md-offset-1">' +
+							'<select class="ingrMeasureUnit form-control">@foreach (var op in Model.MeasureUnits) { <option value="@op.MeasureUnitId">@op.Name</option>}</select>' +
+						'</div>' +
+						'<button type="button" class="btn btn-sm btn-danger pull-right" onclick="$(this).closest(\'.recipe-ingredient\').remove()"><span class="glyphicon glyphicon-trash""></span></button>' +
+					'</div>' +
+				'</div >');
+			templ.find(".ingrMeasureUnit").val(ingr.MeasureUnitId);
+			$("#ingredientContainer").append(templ);
+			$("#ingredientModal").modal("hide");
+		}
+
+		//Data access and persistence
+		function saveRecipe() {
+			if(validateRecipe()) {
+				var data = { };
+				data.RecipeId = $("#recipeId").val();
+				data.Name = $("#name").val();
+				data.Rating = parseInt($("[name='ratingRadios']:checked").val());
+				data.Description = $("#description").val();
+				data.Directions = $("#directions").val();
+				data.ImageUrl = $("#ImageUrl").val();
+				data.Ingredients = new Array();
+				var $this;
+				$(".recipe-ingredient").each(function () {
+					$this = $(this);
+					data.Ingredients.push({
+						IngredientId: $this.data("ingredientid"),
+						Quantity: $this.find("input.ingrQuantity").val(),
+						MeasureUnitId: $this.find("select.ingrMeasureUnit").val(),
+						Name: $this.find(".ingrName").text()
+					});
+				});
+
+				$.ajax({
+					url: "/Home/SaveRecipe",
+					type: "POST",
+					data: data,
+					success: function (resp) {
+						if (resp.Success) {
+							if (data.RecipeId == 0) {
+								vm.Recipes.push(new Recipe({
+									RecipeId: resp.Data,
+									Name: data.Name,
+									Rating: data.Rating,
+									Description: data.Description,
+									Instructions: data.Instructions,
+									ImageUrl: data.ImageUrl
+								}));
+							}
+							else {
+								var nameTag = $(".nameTag[data-recipeid=" + data.RecipeId + "]");
+								var block = nameTag.closest(".block");
+								var stars = block.find("h4.stars");
+								nameTag.text(data.Name);
+								$(stars).empty();
+								for (i = 0; i < data.Rating; i++) {
+									block.find("h4.stars").append("<span class='glyphicon glyphicon-star'></span>");
+								}
+								block.find("p.description").text(data.Description);
+								block.find("p.directions").text(data.Instructions);
+								block.find("img").attr("src", data.ImageUrl);
+							}
+							recipeIngredients[data.RecipeId] = data.Ingredients;
+						}
+						$("#recipeModal").modal("hide");
+					},
+					error: function() {
+						alert("We encountered an error while processing your request.")
+					}
+				});
+			}
+		}
+
+		var currentSeed = 1
+		function getRecipies() {
+			$.ajax({
+				url: "/Home/GetRecipes?recipieCount=4&seed=" + currentSeed,
+				type: "GET",
+				success: function (resp) {
+					currentSeed += 4;
+					$(resp).each(function (i,e) {
+						vm.Recipes.push(new Recipe({
+							RecipeId: e.RecipeId,
+							Name: e.Name,
+							Rating: e.Rating,
+							Description: e.Description,
+							Directions: e.Directions,
+							ImageUrl: e.ImageUrl ? e.ImageUrl : 'http://www.lifestylemagazine.me/wp-content/themes/venus/images/icon_gallery.pngs'
+						}));
+					});
+				},
+				error: function () {
+					alert("We encountered an error while processing your request.")
+				}
+			});
+		}
+
+		var Ingredients = {};
+		function getIngredients(categoryId) {
+			if (!Ingredients[categoryId]) {
+				$.ajax({
+					url: "/Home/GetIngredients?categoryId=" + categoryId,
+					type: "GET",
+					async: false,
+					success: function (resp) {
+						Ingredients[categoryId] = resp;
+					},
+					error: function () {
+						alert("We encountered an error while processing your request.")
+					}
+				});
+			}
+
+			return Ingredients[categoryId];
+		}
+		function saveIngredient(){
+			if (validateIngredient()) {
+				var data = {};
+				data.CategoryId = $("#ingredientCategories").val();
+				data.Name = $("#ingrName").val();
+
+				$.ajax({
+					url: "/Home/SaveIngredient",
+					type: "POST",
+					data: data,
+					success: function (resp) {
+						if (resp.Success) {
+							Ingredients[data.CategoryId].push(resp.Data);
+							addIngredient(resp.Data);
+							$("#ingredientModal").modal("hide");
+						}
+					},
+					error: function () {
+						alert("We encountered an error while processing your request.")
+					}
+				});
+			}
+		}
+
+		var recipeIngredients = {};
+		function getRecipeIngredients(recipeId) {
+			if (!recipeIngredients[recipeId]) {
+				$.ajax({
+					url: "/Home/GetRecipeIngredients?recipeId=" + recipeId,
+					type: "GET",
+					async: false,
+					success: function (resp) {
+						recipeIngredients[recipeId] = resp;
+					},
+					error: function () {
+						alert("We encountered an error while processing your request.")
+					}
+				});
+			}
+
+			return recipeIngredients[recipeId];
+		}
+	</script>
+}
