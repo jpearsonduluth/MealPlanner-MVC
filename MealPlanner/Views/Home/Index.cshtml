@@ -88,7 +88,8 @@
 	.full-detail {
 		width: 100%;
 		margin-left: 0px;
-		-webkit-transition: width .5s ease-in-out;
+		height:auto;
+		-webkit-transition: all .5s ease-in-out;
 	}
 	.full-detail p {
 		display:block;
@@ -168,24 +169,25 @@
 					<br /><br /><br /><br />
 
 					<div class="container" data-bind="foreach: renderedItems">
-						<div class="row" data-bind="foreach: $data">
-							<div data-bind="attr:{ 'class': ($index()%2!=0) ? 'col-md-5  block col-md-offset-2' : 'col-md-5  block', 'data-recipeid': RecipeId }">
+						<div class="row recipe-row" data-bind="foreach: $data">
+							<div data-bind="attr:{ 'data-originalindex':$index(), 'class': ($index()%2!=0) ? 'col-md-5  block col-md-offset-2' : 'col-md-5  block', 'data-recipeid': RecipeId }">
 								<h1>
 									<a class="nameTag" onclick="showRecipeFullDetail(this);" data-bind="text: Name" title="Click for full details and instructions!" data-toggle="tooltip" data-placement="top" href="#RecipeDetail"></a>
 									<button onclick="editRecipe(this);" class="btn btn-success pull-right btnEditRecipe" title="Click to Edit!" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit"></span></button>
 								</h1>
 								<h4 class="stars" data-bind="foreach: new Array(Rating)"><span class="glyphicon glyphicon-star"></span></h4>
 
-								<div class="textWrapper">
-									<br />
-									<p class="description" data-bind="text: Description"></p>
-									<br />
-									<p class="directions" data-bind="text: Directions"></p>
-									<br />
-									<ul class="recipeIngredients"></ul>
+								<div class="row">
+									<div class="col-md-5">
+										<br />
+										<p class="description" data-bind="text: Description"></p>
+										<br />
+										<p class="directions" data-bind="text: Directions"></p>
+										<br />
+										<ul class="recipeIngredients"></ul>
+									</div>
+									<img data-bind="attr:{ src: ImageUrl }" class="recipeImage" />
 								</div>
-								<img data-bind="attr:{ src: ImageUrl }" class="recipeImage" />
-							</div>
 						</div>
 					</div>
 						
@@ -278,8 +280,21 @@
 
 		function showRecipeFullDetail(clicked) {
 			var $block = $(clicked).closest('.block');
+			if ($block.hasClass('full-detail')) {
+				if ($block.index() > 0) {
+					$block.insertBefore($block.siblings());
+					$block.removeClass('col-md-offset-2');
+				}
+			}
+			else {
+				if ($block.index() == 0 && $block.data('originalindex') ==1) {
+					$block.insertAfter($block.siblings());
+					$block.addClass('col-md-offset-2');
+				}
+			}
 			$block.toggleClass('full-detail');
-
+			$block.toggleClass('col-md-5');
+			$block.toggleClass('col-md-12');
 			var ingrList = $block.find("ul.recipeIngredients");
 			if (ingrList.children().length < 1) {
 				var recipeIngr = getRecipeIngredients($block.data("recipeid"));
