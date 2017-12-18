@@ -287,7 +287,7 @@
 				}
 			}
 			else {
-				if ($block.index() == 0 && $block.data('originalindex') ==1) {
+				if ($block.index() == 0 && $block.data('originalindex') == 1) {
 					$block.insertAfter($block.siblings());
 					$block.addClass('col-md-offset-2');
 				}
@@ -295,6 +295,7 @@
 			$block.toggleClass('full-detail');
 			$block.toggleClass('col-md-5');
 			$block.toggleClass('col-md-12');
+
 			var ingrList = $block.find("ul.recipeIngredients");
 			if (ingrList.children().length < 1) {
 				var recipeIngr = getRecipeIngredients($block.data("recipeid"));
