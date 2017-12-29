@@ -417,8 +417,8 @@
 								}));
 							}
 							else {
-								var nameTag = $(".nameTag[data-recipeid=" + data.RecipeId + "]");
-								var block = nameTag.closest(".block");
+								var block = $(".block[data-recipeid=" + data.RecipeId + "]");
+								var nameTag = block.find(".nameTag");
 								var stars = block.find("h4.stars");
 								nameTag.text(data.Name);
 								$(stars).empty();
