@@ -137,8 +137,15 @@
 		color: black;
 		z-index: 9999;
 	}
+	#recipeModal span.glyphicon-star {
+		font-size: xx-large;
+		padding-left: 10px;
+	}
+	#recipeModal span.glyphicon-star:not(.hoverChosen):not(.clickChosen), .non-selected-stars span {
+		color: gray;
+	}
 	.container-fluid {
-		margin-top:25px;
+		margin-top: 25px;
 	}
 	.radio-wrapper .radio {
 		margin: 5px;
@@ -192,7 +199,14 @@
 									<a class="nameTag" onclick="showRecipeFullDetail(this);" data-bind="text: Name" title="Click for full details and instructions!" data-toggle="tooltip" data-placement="top" href="#RecipeDetail"></a>
 									<button onclick="editRecipe(this);" class="btn btn-success pull-right btnEditRecipe" title="Click to Edit!" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit"></span></button>
 								</h1>
-								<h4 class="stars" data-bind="foreach: new Array(Rating)"><span class="glyphicon glyphicon-star"></span></h4>
+								<h4 class="stars">
+									<span class="selected-stars" data-bind="foreach: new Array(Rating)">
+										<span class="glyphicon glyphicon-star"></span>
+									</span>	
+									<span class="non-selected-stars" data-bind="foreach: new Array(RatingRemainder)">
+										<span class="glyphicon glyphicon-star"></span>
+									</span>
+								</h4>
 
 								<div class="row ">
 									<div class="textWrapper scrollbar">
@@ -274,6 +288,7 @@
 			self.RecipeId = ko.observable(data.RecipeId);
 			self.Name = ko.observable(data.Name);
 			self.Rating = data.Rating;
+			self.RatingRemainder = 5 - data.Rating;
 			self.Description = data.Description
 			self.Directions = data.Directions
 			self.Instructions = data.Instructions;
@@ -299,18 +314,6 @@
 
 		function showRecipeFullDetail(clicked) {
 			var $block = $(clicked).closest('.block');
-			//if ($block.hasClass('full-detail')) {
-			//	if ($block.index() > 0) {
-			//		$block.insertBefore($block.siblings());
-			//		$block.removeClass('col-md-offset-2');
-			//	}
-			//}
-			//else {
-			//	if ($block.index() == 0 && $block.data('originalindex') == 1) {
-			//		$block.insertAfter($block.siblings());
-			//		$block.addClass('col-md-offset-2');
-			//	}
-			//}
 			$block.toggleClass('full-detail');
 			$block.toggleClass('col-md-5');
 			$block.toggleClass('col-md-12');
@@ -343,8 +346,10 @@
 			resetRecipieModal();
 			var block = $(clicked).closest(".block");
 			var nameTag = block.find("a.nameTag");
+			var rating = block.find(".selected-stars .glyphicon-star").length;
 			$("#recipeId").val(block.data("recipeid"));
 			$("#name").val(nameTag.text());
+			$("#recipeModal span.glyphicon-star").removeClass("clickChosen").filter(function (i, e) { return i+1 <= rating; }).addClass("clickChosen");
 			$("[name='ratingRadios'][value='" + block.find(".glyphicon-star").length+"']").trigger("click");
 			$("#description").val(block.find("p.description").text());
 			$("#directions").val(block.find("p.directions").text());
@@ -358,7 +363,16 @@
 			//TO-DO: add some form validation here...
 			return true;
 		}
-
+		$("#recipeModal span.glyphicon-star").each(function () {
+			$(this).hover(
+				function () { $(this).prevAll().add(this).addClass("hoverChosen") },
+				function () { $(this).prevAll().add(this).removeClass("hoverChosen") }
+			).click(function () {
+				var $t = $(this);
+				$t.toggleClass("clickChosen").prevAll(".glyphicon-star").addClass("clickChosen");
+				$t.nextAll(".glyphicon-star").removeClass("clickChosen");
+			})
+		});
 
 		//Ingredients Modal
 		$("#ingredientModal").on('show.bs.modal', function () {
@@ -419,7 +433,7 @@
 				var data = { };
 				data.RecipeId = $("#recipeId").val();
 				data.Name = $("#name").val();
-				data.Rating = parseInt($("[name='ratingRadios']:checked").val());
+				data.Rating = $("#recipeModal .clickChosen").length;
 				data.Description = $("#description").val();
 				data.Directions = $("#directions").val();
 				data.ImageUrl = $("#ImageUrl").val();
@@ -452,13 +466,15 @@
 								}));
 							}
 							else {
-								var nameTag = $(".nameTag[data-recipeid=" + data.RecipeId + "]");
-								var block = nameTag.closest(".block");
-								var stars = block.find("h4.stars");
+								var block = $(".block[data-recipeid=" + data.RecipeId + "]");
+								var nameTag = block.find(".nameTag");
 								nameTag.text(data.Name);
-								$(stars).empty();
+								block.find(".selected-stars, .non-selected-stars").empty();
 								for (i = 0; i < data.Rating; i++) {
-									block.find("h4.stars").append("<span class='glyphicon glyphicon-star'></span>");
+									block.find(".selected-stars").append("<span class='glyphicon glyphicon-star'></span>");
+								}
+								for (i = 0; i < 5-data.Rating; i++) {
+									block.find(".non-selected-stars").append("<span class='glyphicon glyphicon-star'></span>");
 								}
 								block.find("p.description").text(data.Description);
 								block.find("p.directions").text(data.Instructions);

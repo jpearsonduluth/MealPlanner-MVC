@@ -17,6 +17,10 @@ namespace MealPlanner.Models {
 		public string Directions { get; set; }
 		public string ImageUrl { get; set; }
 		public IEnumerable<RecipeIngredientVM> Ingredients { get; set; }
+
+		public RecipeVM() {
+			Ingredients = new List<RecipeIngredientVM>();
+		}
 	}
 	public class RecipeIngredientVM : IngredientVM {
 		public int Quantity { get; set; }
