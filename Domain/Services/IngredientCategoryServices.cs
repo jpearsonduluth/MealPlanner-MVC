@@ -15,8 +15,8 @@ namespace Domain.Services {
 		/// Gets all IngredientCategories.
 		/// </summary>
 		/// <returns>All IngredientCategories.</returns>
-		public IEnumerable<IngredientCategory> Get() {
-			return new IngredientCategoriesRepo().Get();
+		public IEnumerable<Models.IngredientCategory> Get() {
+			return new IngredientCategoriesRepo().Get().Select(r => new Models.IngredientCategory(r));
 		}
 
 		/// <summary>

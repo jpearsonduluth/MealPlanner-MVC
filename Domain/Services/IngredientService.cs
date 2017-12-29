@@ -37,13 +37,13 @@ namespace Domain.Services {
 		/// </summary>
 		/// <param name="Ingredient">The Ingredient to saved.</param>
 		/// <returns>A typed service response, containing the Ingredient, with its PK Id populated.</returns>
-		public ServiceResponse<Ingredient> Save(Ingredient Ingredient) {
-			ServiceResponse<Ingredient> resp = new ServiceResponse<Ingredient>();
+		public ServiceResponse<Models.Ingredient> Save(Models.Ingredient Ingredient) {
+			ServiceResponse<Models.Ingredient> resp = new ServiceResponse<Models.Ingredient>();
 			Ingredient.Name = Ingredient.Name.Trim();
 
 			IngredientsRepo r = new IngredientsRepo();
 			if (!r.Get().Any(x => x.Name.ToLower() == Ingredient.Name.ToLower())) {
-				resp.Data = r.Save(Ingredient);
+				resp.Data = new Models.Ingredient(r.Save(Ingredient.ToRepo()));
 				resp.Success = true;
 			}
 			else {

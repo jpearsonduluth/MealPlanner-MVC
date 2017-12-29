@@ -48,6 +48,21 @@
           <Property Name="Directions" Type="nvarchar(max)" />
           <Property Name="ImageUrl" Type="nvarchar" MaxLength="500" />
         </EntityType>
+        <EntityType Name="RecipeTags">
+          <Key>
+            <PropertyRef Name="RecipeTagId" />
+          </Key>
+          <Property Name="RecipeTagId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecipeId" Type="int" Nullable="false" />
+          <Property Name="TagId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tags">
+          <Key>
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="TagId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="500" Nullable="false" />
+        </EntityType>
         <Association Name="FK__Ingredien__Ingre__239E4DCF">
           <End Role="IngredientCategories" Type="Self.IngredientCategories" Multiplicity="1" />
           <End Role="Ingredients" Type="Self.Ingredients" Multiplicity="*" />
@@ -96,12 +111,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__RecipeTag__Recip__38996AB5">
+          <End Role="Recipes" Type="Self.Recipes" Multiplicity="1" />
+          <End Role="RecipeTags" Type="Self.RecipeTags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Recipes">
+              <PropertyRef Name="RecipeId" />
+            </Principal>
+            <Dependent Role="RecipeTags">
+              <PropertyRef Name="RecipeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RecipeTag__TagId__398D8EEE">
+          <End Role="Tags" Type="Self.Tags" Multiplicity="1" />
+          <End Role="RecipeTags" Type="Self.RecipeTags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tags">
+              <PropertyRef Name="TagId" />
+            </Principal>
+            <Dependent Role="RecipeTags">
+              <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="MealPlannerModelStoreContainer">
           <EntitySet Name="IngredientCategories" EntityType="Self.IngredientCategories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ingredients" EntityType="Self.Ingredients" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MeasureUnits" EntityType="Self.MeasureUnits" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecipeIngredients" EntityType="Self.RecipeIngredients" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Recipes" EntityType="Self.Recipes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RecipeTags" EntityType="Self.RecipeTags" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tags" EntityType="Self.Tags" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Ingredien__Ingre__239E4DCF" Association="Self.FK__Ingredien__Ingre__239E4DCF">
             <End Role="IngredientCategories" EntitySet="IngredientCategories" />
             <End Role="Ingredients" EntitySet="Ingredients" />
@@ -117,6 +158,14 @@
           <AssociationSet Name="FK__RecipeIng__Recip__164452B1" Association="Self.FK__RecipeIng__Recip__164452B1">
             <End Role="Recipes" EntitySet="Recipes" />
             <End Role="RecipeIngredients" EntitySet="RecipeIngredients" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RecipeTag__Recip__38996AB5" Association="Self.FK__RecipeTag__Recip__38996AB5">
+            <End Role="Recipes" EntitySet="Recipes" />
+            <End Role="RecipeTags" EntitySet="RecipeTags" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RecipeTag__TagId__398D8EEE" Association="Self.FK__RecipeTag__TagId__398D8EEE">
+            <End Role="Tags" EntitySet="Tags" />
+            <End Role="RecipeTags" EntitySet="RecipeTags" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -178,6 +227,16 @@
             <End Role="Ingredient" EntitySet="Ingredients" />
             <End Role="RecipeIngredient" EntitySet="RecipeIngredients" />
           </AssociationSet>
+          <EntitySet Name="RecipeTags" EntityType="MealPlannerModel.RecipeTag" />
+          <EntitySet Name="Tags" EntityType="MealPlannerModel.Tag" />
+          <AssociationSet Name="FK__RecipeTag__Recip__38996AB5" Association="MealPlannerModel.FK__RecipeTag__Recip__38996AB5">
+            <End Role="Recipe" EntitySet="Recipes" />
+            <End Role="RecipeTag" EntitySet="RecipeTags" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RecipeTag__TagId__398D8EEE" Association="MealPlannerModel.FK__RecipeTag__TagId__398D8EEE">
+            <End Role="Tag" EntitySet="Tags" />
+            <End Role="RecipeTag" EntitySet="RecipeTags" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Recipe">
           <Key>
@@ -190,6 +249,7 @@
           <Property Name="Directions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ImageUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="RecipeIngredients" Relationship="MealPlannerModel.FK__RecipeIng__Recip__164452B1" FromRole="Recipe" ToRole="RecipeIngredient" />
+          <NavigationProperty Name="RecipeTags" Relationship="MealPlannerModel.FK__RecipeTag__Recip__38996AB5" FromRole="Recipe" ToRole="RecipeTag" />
         </EntityType>
         <Association Name="FK__RecipeIng__Recip__164452B1">
           <End Type="MealPlannerModel.Recipe" Role="Recipe" Multiplicity="1" />
@@ -245,6 +305,48 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="RecipeTag">
+          <Key>
+            <PropertyRef Name="RecipeTagId" />
+          </Key>
+          <Property Name="RecipeTagId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecipeId" Type="Int32" Nullable="false" />
+          <Property Name="TagId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Recipe" Relationship="MealPlannerModel.FK__RecipeTag__Recip__38996AB5" FromRole="RecipeTag" ToRole="Recipe" />
+          <NavigationProperty Name="Tag" Relationship="MealPlannerModel.FK__RecipeTag__TagId__398D8EEE" FromRole="RecipeTag" ToRole="Tag" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="TagId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="RecipeTags" Relationship="MealPlannerModel.FK__RecipeTag__TagId__398D8EEE" FromRole="Tag" ToRole="RecipeTag" />
+        </EntityType>
+        <Association Name="FK__RecipeTag__Recip__38996AB5">
+          <End Type="MealPlannerModel.Recipe" Role="Recipe" Multiplicity="1" />
+          <End Type="MealPlannerModel.RecipeTag" Role="RecipeTag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Recipe">
+              <PropertyRef Name="RecipeId" />
+            </Principal>
+            <Dependent Role="RecipeTag">
+              <PropertyRef Name="RecipeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RecipeTag__TagId__398D8EEE">
+          <End Type="MealPlannerModel.Tag" Role="Tag" Multiplicity="1" />
+          <End Type="MealPlannerModel.RecipeTag" Role="RecipeTag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="TagId" />
+            </Principal>
+            <Dependent Role="RecipeTag">
+              <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -296,6 +398,23 @@
                 <ScalarProperty Name="IngredientCategoryId" ColumnName="IngredientCategoryId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="IngredientId" ColumnName="IngredientId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RecipeTags">
+            <EntityTypeMapping TypeName="MealPlannerModel.RecipeTag">
+              <MappingFragment StoreEntitySet="RecipeTags">
+                <ScalarProperty Name="TagId" ColumnName="TagId" />
+                <ScalarProperty Name="RecipeId" ColumnName="RecipeId" />
+                <ScalarProperty Name="RecipeTagId" ColumnName="RecipeTagId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tags">
+            <EntityTypeMapping TypeName="MealPlannerModel.Tag">
+              <MappingFragment StoreEntitySet="Tags">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="TagId" ColumnName="TagId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -14,6 +14,10 @@
         <EntityTypeShape EntityType="MealPlannerModel.Ingredient" Width="1.5" PointX="1.25" PointY="0.5" />
         <AssociationConnector Association="MealPlannerModel.FK__Ingredien__Ingre__239E4DCF" />
         <AssociationConnector Association="MealPlannerModel.FK__RecipeIng__Ingre__173876EA" />
+        <EntityTypeShape EntityType="MealPlannerModel.RecipeTag" Width="1.5" PointX="8.75" PointY="1.875" />
+        <EntityTypeShape EntityType="MealPlannerModel.Tag" Width="1.5" PointX="6.5" PointY="6.125" />
+        <AssociationConnector Association="MealPlannerModel.FK__RecipeTag__Recip__38996AB5" />
+        <AssociationConnector Association="MealPlannerModel.FK__RecipeTag__TagId__398D8EEE" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
