@@ -203,7 +203,7 @@
 									<span class="selected-stars" data-bind="foreach: new Array(Rating)">
 										<span class="glyphicon glyphicon-star"></span>
 									</span>	
-									<span class="non-selected-stars" data-bind="foreach: new Array(RatingRemainder)">
+									<span class="non-selected-stars" data-bind="foreach: new Array(5-Rating)">
 										<span class="glyphicon glyphicon-star"></span>
 									</span>
 								</h4>
@@ -288,7 +288,6 @@
 			self.RecipeId = ko.observable(data.RecipeId);
 			self.Name = ko.observable(data.Name);
 			self.Rating = data.Rating;
-			self.RatingRemainder = 5 - data.Rating;
 			self.Description = data.Description
 			self.Directions = data.Directions
 			self.Instructions = data.Instructions;
