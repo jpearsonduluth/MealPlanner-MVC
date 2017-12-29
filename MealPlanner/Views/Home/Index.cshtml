@@ -313,8 +313,9 @@
 		function showRecipeFullDetail(clicked) {
 			var $block = $(clicked).closest('.block');
 			$block.toggleClass('full-detail');
-			$block.toggleClass('col-md-5');
-			$block.toggleClass('col-md-12');
+			setTimeout(function () {
+				window.scrollTo(0, $block.position().top)
+			}, 550);
 
 			var ingrList = $block.find("ul.recipeIngredients");
 			if (ingrList.children().length < 1) {
