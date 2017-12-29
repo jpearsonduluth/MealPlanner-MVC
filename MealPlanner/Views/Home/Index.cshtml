@@ -69,38 +69,40 @@
 	#recipes .block {
 		margin-bottom:35px;
 	}
+	.imgWrapper {
+		text-align:center;
+	}
+	.textWrapper {
+		padding:15px;
+		margin-bottom:25px;
+		height:100px;
+		overflow:auto;
+	}
 	.recipeImage {
-		width: 100%;
-		max-height:265px;
+		max-width: 95%;
+		height:265px;
 		padding-bottom: 15px;
 	}
 	.glyphicon-star {
 		color: gold;
 		padding-right: 5px;
 	}
-	p.description {
-		height: 75px;
-		overflow:auto;
-	}
-	p.directions {
-		display:none;
+	p.directions, ul.recipeIngredients {
+		display: none;
 	}
 	.full-detail {
 		width: 100%;
 		margin-left: 0px;
-		-webkit-transition: width .5s ease-in-out;
+		height: auto;
+		-webkit-transition: all .5s ease-in-out;
 	}
-	.full-detail p {
+	.full-detail p, .full-detail ul {
 		display:block;
-		height:auto;
 	}
 	.full-detail .textWrapper {
 		width: 45%;
-		float:left;
-	}
-	.full-detail .recipeImage {
-		width: 40%;
-		float: right;
+		float: left;
+		height: auto;
 	}
 
 	
@@ -135,15 +137,38 @@
 		color: black;
 		z-index: 9999;
 	}
+	#recipeModal span.glyphicon-star {
+		font-size: xx-large;
+		padding-left: 10px;
+	}
+	#recipeModal span.glyphicon-star:not(.hoverChosen):not(.clickChosen), .non-selected-stars span {
+		color: gray;
+	}
 	.container-fluid {
-		margin-top:25px;
+		margin-top: 25px;
 	}
 	.radio-wrapper .radio {
 		margin: 5px;
 	}
+
+
+	.scrollbar::-webkit-scrollbar-track, body::-webkit-scrollbar-track {
+		width: 6px;
+		-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+		background-color: lightgray;
+		border-radius: 10px;
+	}
+	.scrollbar::-webkit-scrollbar, body::-webkit-scrollbar {
+		background-color: rgba(0,0,0,.75);
+	}
+	.scrollbar::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb {
+		border-radius: 10px;
+		-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+		background-color: rgba(0,0,0,.50);
+	}
 </style>
 
-<div class="container-fluid">
+<div class="container-fluid scrollbar">
 	<br />
 
 	<div class="pages">
@@ -168,37 +193,47 @@
 					<br /><br /><br /><br />
 
 					<div class="container" data-bind="foreach: renderedItems">
-						<div class="row" data-bind="foreach: $data">
-							<div data-bind="attr:{ 'class': ($index()%2!=0) ? 'col-md-5  block col-md-offset-2' : 'col-md-5  block', 'data-recipeid': RecipeId }">
+						<div class="row recipe-row" data-bind="foreach: $data">
+							<div data-bind="attr:{ 'data-originalindex':$index(), 'class': ($index()%2!=0) ? 'col-md-5  block col-md-offset-2' : 'col-md-5  block', 'data-recipeid': RecipeId }">
 								<h1>
 									<a class="nameTag" onclick="showRecipeFullDetail(this);" data-bind="text: Name" title="Click for full details and instructions!" data-toggle="tooltip" data-placement="top" href="#RecipeDetail"></a>
 									<button onclick="editRecipe(this);" class="btn btn-success pull-right btnEditRecipe" title="Click to Edit!" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit"></span></button>
 								</h1>
-								<h4 class="stars" data-bind="foreach: new Array(Rating)"><span class="glyphicon glyphicon-star"></span></h4>
+								<h4 class="stars">
+									<span class="selected-stars" data-bind="foreach: new Array(Rating)">
+										<span class="glyphicon glyphicon-star"></span>
+									</span>	
+									<span class="non-selected-stars" data-bind="foreach: new Array(5-Rating)">
+										<span class="glyphicon glyphicon-star"></span>
+									</span>
+								</h4>
 
-								<div class="textWrapper">
-									<br />
-									<p class="description" data-bind="text: Description"></p>
-									<br />
-									<p class="directions" data-bind="text: Directions"></p>
-									<br />
-									<ul class="recipeIngredients"></ul>
+								<div class="row ">
+									<div class="textWrapper scrollbar">
+										<div class="card-body">
+											<br />
+											<p class="description" data-bind="text: Description"></p>
+											<br />
+											<p class="directions" data-bind="text: Directions"></p>
+											<br />
+											<ul class="recipeIngredients"></ul>
+										</div>
+									</div>
+									<div class="imgWrapper">
+										<img data-bind="attr:{ src: ImageUrl }" class="recipeImage" />
+									</div>
 								</div>
-								<img data-bind="attr:{ src: ImageUrl }" class="recipeImage" />
 							</div>
 						</div>
 					</div>
-						
 					<div class="row">
 						<div class="col-md-1 col-lg-offset-5">
 							<button onclick="getRecipies()" class="btn-primary btn btn-lg">Load More</button>
 						</div>
 					</div>
-
 				</div>
+
 			</div>
-
-
 			<div class="row page" id="mealPlanner">
 				<div class="col-md-10 col-md-offset-1">
 					<div class="row">
@@ -279,6 +314,8 @@
 		function showRecipeFullDetail(clicked) {
 			var $block = $(clicked).closest('.block');
 			$block.toggleClass('full-detail');
+			$block.toggleClass('col-md-5');
+			$block.toggleClass('col-md-12');
 
 			var ingrList = $block.find("ul.recipeIngredients");
 			if (ingrList.children().length < 1) {
@@ -308,8 +345,10 @@
 			resetRecipieModal();
 			var block = $(clicked).closest(".block");
 			var nameTag = block.find("a.nameTag");
+			var rating = block.find(".selected-stars .glyphicon-star").length;
 			$("#recipeId").val(block.data("recipeid"));
 			$("#name").val(nameTag.text());
+			$("#recipeModal span.glyphicon-star").removeClass("clickChosen").filter(function (i, e) { return i+1 <= rating; }).addClass("clickChosen");
 			$("[name='ratingRadios'][value='" + block.find(".glyphicon-star").length+"']").trigger("click");
 			$("#description").val(block.find("p.description").text());
 			$("#directions").val(block.find("p.directions").text());
@@ -323,7 +362,16 @@
 			//TO-DO: add some form validation here...
 			return true;
 		}
-
+		$("#recipeModal span.glyphicon-star").each(function () {
+			$(this).hover(
+				function () { $(this).prevAll().add(this).addClass("hoverChosen") },
+				function () { $(this).prevAll().add(this).removeClass("hoverChosen") }
+			).click(function () {
+				var $t = $(this);
+				$t.toggleClass("clickChosen").prevAll(".glyphicon-star").addClass("clickChosen");
+				$t.nextAll(".glyphicon-star").removeClass("clickChosen");
+			})
+		});
 
 		//Ingredients Modal
 		$("#ingredientModal").on('show.bs.modal', function () {
@@ -384,7 +432,7 @@
 				var data = { };
 				data.RecipeId = $("#recipeId").val();
 				data.Name = $("#name").val();
-				data.Rating = parseInt($("[name='ratingRadios']:checked").val());
+				data.Rating = $("#recipeModal .clickChosen").length;
 				data.Description = $("#description").val();
 				data.Directions = $("#directions").val();
 				data.ImageUrl = $("#ImageUrl").val();
@@ -419,11 +467,13 @@
 							else {
 								var block = $(".block[data-recipeid=" + data.RecipeId + "]");
 								var nameTag = block.find(".nameTag");
-								var stars = block.find("h4.stars");
 								nameTag.text(data.Name);
-								$(stars).empty();
+								block.find(".selected-stars, .non-selected-stars").empty();
 								for (i = 0; i < data.Rating; i++) {
-									block.find("h4.stars").append("<span class='glyphicon glyphicon-star'></span>");
+									block.find(".selected-stars").append("<span class='glyphicon glyphicon-star'></span>");
+								}
+								for (i = 0; i < 5-data.Rating; i++) {
+									block.find(".non-selected-stars").append("<span class='glyphicon glyphicon-star'></span>");
 								}
 								block.find("p.description").text(data.Description);
 								block.find("p.directions").text(data.Instructions);
