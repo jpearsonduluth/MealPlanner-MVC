@@ -1,5 +1,5 @@
-﻿using DataAccess;
-using Domain.Services;
+﻿using Domain.Services;
+using Domain.Models;
 using MealPlanner.Models;
 using System;
 using System.Collections.Generic;

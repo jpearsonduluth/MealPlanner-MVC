@@ -55,13 +55,13 @@ namespace Domain.Services {
 		/// </summary>
 		/// <param name="Recipe">The Recipe to saved.</param>
 		/// <returns>A typed service response, containing the Recipe, with its PK Id populated.</returns>
-		public ServiceResponse<Recipe> Save(Recipe recipe) {
-			ServiceResponse<Recipe> resp = new ServiceResponse<Recipe>();
+		public ServiceResponse<Models.Recipe> Save(Models.Recipe recipe) {
+			ServiceResponse<Models.Recipe> resp = new ServiceResponse<Models.Recipe>();
 			recipe.Name = recipe.Name.Trim();
 
 			RecipesRepo r = new RecipesRepo();
 			if (!r.Get().Any(x => x.RecipeId != recipe.RecipeId && x.Name.ToLower() == recipe.Name.ToLower())) {
-				resp.Data = r.Save(recipe);
+				resp.Data = new Models.Recipe(r.Save(recipe.ToRepo()));
 				resp.Success = true;
 			}
 			else {

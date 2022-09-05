@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DataAccess</RootNamespace>
     <AssemblyName>DataAccess</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,12 +81,20 @@
     <Compile Include="RecipeIngredient.cs">
       <DependentUpon>MealPlanEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="RecipeTag.cs">
+      <DependentUpon>MealPlanEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="RepoBase.cs" />
     <Compile Include="Repositories\IngredientCategoryRepo.cs" />
     <Compile Include="Repositories\IngredientRepo.cs" />
     <Compile Include="Repositories\MeasureUnitRepo.cs" />
     <Compile Include="Repositories\RecipeIngredientRepo.cs" />
     <Compile Include="Repositories\RecipesRepo.cs" />
+    <Compile Include="Repositories\RecipeTagRepo.cs" />
+    <Compile Include="Repositories\TagRepo.cs" />
+    <Compile Include="Tag.cs">
+      <DependentUpon>MealPlanEntities.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

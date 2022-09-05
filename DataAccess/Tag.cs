@@ -12,24 +12,17 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class Recipe
+    public partial class Tag
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Recipe()
+        public Tag()
         {
-            this.RecipeIngredients = new HashSet<RecipeIngredient>();
             this.RecipeTags = new HashSet<RecipeTag>();
         }
     
-        public int RecipeId { get; set; }
-        public string Name { get; set; }
-        public Nullable<int> Rating { get; set; }
-        public string Description { get; set; }
-        public string Directions { get; set; }
-        public string ImageUrl { get; set; }
+        public int TagId { get; set; }
+        public string Value { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RecipeTag> RecipeTags { get; set; }
     }

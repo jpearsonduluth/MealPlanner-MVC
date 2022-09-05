@@ -30,5 +30,7 @@ namespace DataAccess
         public virtual DbSet<Recipe> Recipes { get; set; }
         public virtual DbSet<IngredientCategory> IngredientCategories { get; set; }
         public virtual DbSet<Ingredient> Ingredients { get; set; }
+        public virtual DbSet<RecipeTag> RecipeTags { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
     }
 }

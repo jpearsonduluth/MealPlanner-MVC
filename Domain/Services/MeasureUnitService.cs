@@ -15,8 +15,8 @@ namespace Domain.Services {
 		/// Gets all MeasureUnits.
 		/// </summary>
 		/// <returns>All MeasureUnits.</returns>
-		public IEnumerable<MeasureUnit> Get() {
-			return new MeasureUnitsRepo().Get();
+		public IEnumerable<Models.MeasureUnit> Get() {
+			return new MeasureUnitsRepo().Get().Select(r => new Models.MeasureUnit(r));
 		}
 
 		/// <summary>
@@ -44,13 +44,13 @@ namespace Domain.Services {
 		/// </summary>
 		/// <param name="MeasureUnit">The MeasureUnit to saved.</param>
 		/// <returns>A typed service response, containing the MeasureUnit, with its PK Id populated.</returns>
-		public ServiceResponse<MeasureUnit> Save(MeasureUnit MeasureUnit) {
-			ServiceResponse<MeasureUnit> resp = new ServiceResponse<MeasureUnit>();
+		public ServiceResponse<Models.MeasureUnit> Save(Models.MeasureUnit MeasureUnit) {
+			ServiceResponse<Models.MeasureUnit> resp = new ServiceResponse<Models.MeasureUnit>();
 			MeasureUnit.Name = MeasureUnit.Name.Trim();
 
 			MeasureUnitsRepo r = new MeasureUnitsRepo();
 			if (!r.Get().Any(x => x.Name.ToLower() == MeasureUnit.Name.ToLower())) {
-				resp.Data = r.Save(MeasureUnit);
+				resp.Data = new Models.MeasureUnit(r.Save(MeasureUnit.ToRepo()));
 				resp.Success = true;
 			}
 			else {
